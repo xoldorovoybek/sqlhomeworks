@@ -1,54 +1,38 @@
-use master
-CREATE TABLE InputTbl (col1 VARCHAR(1), col2 VARCHAR(1))
-INSERT INTO InputTbl VALUES 
-('a', 'b'),
-('a', 'b'),
-('b', 'a'),
-('c',  'd'),
-('c', 'd'),
-('m', 'n'),
-('n', 'm');
-
-SELECT LEAST(col1, col2) AS col1, GREATEST(col1, col2) AS col2
-FROM InputTbl
-GROUP BY LEAST(col1, col2), GREATEST(col1, col2);
-
-CREATE TABLE GroupbyMultipleColumns ( ID INT, Typ VARCHAR(1), Value1 VARCHAR(1), Value2 VARCHAR(1), Value3 VARCHAR(1) );
-
-INSERT INTO GroupbyMultipleColumns(ID, Typ, Value1, Value2, Value3) VALUES 
-(1, 'I', 'a', 'b', ''),
-(2, 'O', 'a', 'd', 'f'),
-(3, 'I', 'd', 'b', ''), 
-(4, 'O', 'g', 'l', ''),
-(5, 'I', 'z', 'g', 'a'), 
-(6, 'I', 'z', 'g', 'a');
-select * from GroupbyMultipleColumns
-
-select Typ,
-sum(case when value1 = 'a' then 1 else 0 end) +
-sum(case when value2 = 'a' then 1 else 0 end) +
-sum(case when value3 = 'a' then 1 else 0 end) as Countof_a 
-from GroupbyMultipleColumns
-group by Typ
-
-CREATE TABLE TESTDuplicateCount ( ID INT, EmpName VARCHAR(100), EmpDate DATETIME );
-
-INSERT INTO TESTDuplicateCount(ID,EmpName,EmpDate) VALUES 
-(1,'Pawan','2014-01-05'), 
-(2,'Pawan','2014-03-05'), 
-(3,'Pawan','2014-02-05'), 
-(4,'Manisha','2014-07-05'), 
-(5,'Sharlee','2014-09-05'), 
-(6,'Barry','2014-02-05'), 
-(7,'Jyoti','2014-04-05'), 
-(8,'Jyoti','2014-05-05');
-
-select EmpName, Count(*) as dublicate
-from TESTDuplicateCount
-group by empname 
-having COUNT (*) > 1;
+CREATE TABLE InputTbl 
+( col1 VARCHAR(10), col2 VARCHAR(10) ); INSERT INTO InputTbl (col1, col2) 
+VALUES ('a', 'b'), ('a', 'b'), ('b', 'a'), ('c', 'd'), ('c', 'd'), ('m', 'n'), ('n', 'm');
 
 
+SELECT DISTINCT 
+    CASE WHEN col1 < col2 THEN col1 ELSE col2 END AS colA,
+    CASE WHEN col1 < col2 THEN col2 ELSE col1 END AS colB
+FROM InputTbl;
 
 
+CREATE TABLE TestMultipleZero ( A INT NULL, B INT NULL, C INT NULL, D INT NULL );
 
+
+INSERT INTO TestMultipleZero(A,B,C,D) VALUES (0,0,0,1), (0,0,1,0), (0,1,0,0), (1,0,0,0), (0,0,0,0), (1,1,1,0);
+
+select * from TestMultipleZero
+where (A + B + C + D) > 0
+
+
+create table section1(id int, name varchar(20)) insert into section1 values 
+(1, 'Been'), (2, 'Roma'), (3, 'Steven'), (4, 'Paulo'), (5, 'Genryh'), (6, 'Bruno'), (7, 'Fred'), (8, 'Andro')
+
+select min(id) id  from section1
+
+select max(id) id from section1
+
+
+select * from section1
+where name like 'b_%'
+
+CREATE TABLE ProductCodes ( Code VARCHAR(20) );
+
+INSERT INTO ProductCodes (Code) VALUES 
+('X-123'), ('X_456'), ('X#789'), ('X-001'), ('X%202'), ('X_ABC'), ('X#DEF'), ('X-999');
+
+select * from ProductCodes
+where Code like '%\_%' escape '\'
